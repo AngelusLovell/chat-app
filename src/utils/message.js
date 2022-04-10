@@ -6,15 +6,6 @@ const generateMessage = (text, owner) => {
 	}
 }
 
-const generateLocationMessage = (url, owner) => {
-	return {
-		owner,
-		url,
-		createdAt: new Date().getTime()
-	}
-}
-
 module.exports = {
-	generateMessage,
-	generateLocationMessage
+	generateMessage
 }

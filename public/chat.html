@@ -2,60 +2,75 @@
 <html>
 <head>
 	<title> </title>
-	<link rel="stylesheet" href="/css/main.css" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="./css/main.css" />
 </head>
 <body>
 	<main>
-		<div class="chat-wrapper">
+		<div class="chat">
 			<div class="chat__top">
 				<p class="chat-header"> Chat App </p>
 				<hr />
+				<div class="current-room-info">
+					<div class="room-data-conatiner"><!--template conatiner--></div>
+					<button class="room-info-btn">
+						<svg class="room-info-btn__icon" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512">
+						<path fill="#FAB400"  d="M18.71,8.21a1,1,0,0,0-1.42,0l-4.58,4.58a1,1,0,0,1-1.42,0L6.71,8.21a1,1,0,0,0-1.42,0,1,1,0,0,0,0,1.41l4.59,4.59a3,3,0,0,0,4.24,0l4.59-4.59A1,1,0,0,0,18.71,8.21Z"/>
+						</svg>
+					</button>
+				</div>
 			</div>
 			<div class="chat__middle" id="message-window">
 				<div class="message-placeholder"></div>
 			</div>
 			<div class="chat__bottom">
-				<button id="send-location-btn">share location</button>
-				<form class="chat-form" id="message-form" autocomplete="off" >
-					<input name="messageInput" placeholder="msg" required="true"/>
-					<button> send </button>
-				</form>
+				<div class="chat__bottom--rooms">
+					<span>feature not available yet</span>
+				</div>
+				<div class="chat__bottom--form">
+					<button class="menu-btn">
+						<svg class="menu-btn__icon" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512">
+							<path  d="M7,0H4A4,4,0,0,0,0,4V7a4,4,0,0,0,4,4H7a4,4,0,0,0,4-4V4A4,4,0,0,0,7,0ZM9,7A2,2,0,0,1,7,9H4A2,2,0,0,1,2,7V4A2,2,0,0,1,4,2H7A2,2,0,0,1,9,4Z"/>
+							<path d="M20,0H17a4,4,0,0,0-4,4V7a4,4,0,0,0,4,4h3a4,4,0,0,0,4-4V4A4,4,0,0,0,20,0Zm2,7a2,2,0,0,1-2,2H17a2,2,0,0,1-2-2V4a2,2,0,0,1,2-2h3a2,2,0,0,1,2,2Z"/>
+							<path d="M7,13H4a4,4,0,0,0-4,4v3a4,4,0,0,0,4,4H7a4,4,0,0,0,4-4V17A4,4,0,0,0,7,13Zm2,7a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V17a2,2,0,0,1,2-2H7a2,2,0,0,1,2,2Z"/>
+							<path d="M20,13H17a4,4,0,0,0-4,4v3a4,4,0,0,0,4,4h3a4,4,0,0,0,4-4V17A4,4,0,0,0,20,13Zm2,7a2,2,0,0,1-2,2H17a2,2,0,0,1-2-2V17a2,2,0,0,1,2-2h3a2,2,0,0,1,2,2Z"/>
+						</svg>
+					</button>
+					<form class="chat-form" id="message-form" autocomplete="off" >
+						<input class="form-input" name="messageInput" placeholder="msg" required="true"/>
+						<button class="form-submit-btn">
+							<svg class="message-send-btn__icon" xmlns="http://www.w3.org/2000/svg" id="arrow-circle-down" viewBox="0 0 24 24" width="512" height="512">
+							<path fill=""  d="M0,12A12,12,0,1,0,12,0,12.013,12.013,0,0,0,0,12Zm16,0a2.993,2.993,0,0,1-.752,1.987c-.291.327-.574.637-.777.84L11.647,17.7a1,1,0,1,1-1.426-1.4L13.05,13.42c.187-.188.441-.468.7-.759a1,1,0,0,0,0-1.323c-.258-.29-.512-.57-.693-.752L10.221,7.7a1,1,0,1,1,1.426-1.4l2.829,2.879c.2.2.48.507.769.833A2.99,2.99,0,0,1,16,12Z"/>
+							</svg>
+						</button>
+					</form>
+				</div>
 			</div>
 		</div>
-			
-		<div class="chat-nav">
-			<div class="room-info"></div>
-			<div class="more-room"></div>
-		</div>
+		
 	</main>
 	
 	
 	<!-- templates -->
 	<script id="message-template" type="text/html">
-		<div>
-			<p> 
-				{{owner}}
-				<span class="message-time">{{createdAt}}</span> <br />
+		<div class="message-wrapper">
+			<p class="message">
+				<span class="message__owner">{{owner}}</span>
+				<span class="message__time">{{createdAt}}</span> <br />
 				{{message}}
 			</p>
 		</div>
 	</script>
-	<script id="location-message-template" type="text/html">
-		<div>
-			<p>
-				{{owner}}
-				<span class="message-time">{{createdAt}}</span> <br /> 
-				<a href="{{url}}" target="_blank">shared location!</a>
-			</p>
+	
+	<script id="room-data-template" type="text/html">
+		<div class="room-data">
+			<div class="room-title">r@{{room}} - &nbsp</div>
+			<div class="online-user">
+				{{#users}}
+					<span>{{username}}</span>
+				{{/users}}
+			</div>
 		</div>
-	</script>
-	<script id="room-info-template" type="text/html">
-		<h2 class="room-title">{{room}}</h2>
-		<ul class="room-users">
-			{{#users}}
-				<li>{{username}}</li>
-			{{/users}}
-		</ul>
 	</script>
 	
 	<!-- scripts -->

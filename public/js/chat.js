@@ -1,17 +1,17 @@
 const socket = io()
+const userDeviceWidth = (window.innerWidth > 0) ? window.innerWidth : screen.width
+
 
 // elements
 const $messageForm = document.querySelector('#message-form')
 const $messageFormInput = $messageForm.querySelector('input')
 const $messageFormButton = $messageForm.querySelector('button')
-const $sendLocationButton = document.querySelector('#send-location-btn')
 const $messages = document.querySelector('#message-window')
 
 
 // templates
 const messageTemplate = document.querySelector("#message-template").innerHTML
-const locationTemplate = document.querySelector("#location-message-template").innerHTML
-const roomInfoTemplate = document.querySelector("#room-info-template").innerHTML
+const roomDataTemplate = document.querySelector("#room-data-template").innerHTML
 
 // options
 const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
@@ -45,22 +45,18 @@ socket.on('message', (message) => {
 	autoScroll()
 })
 
-socket.on('location', (location) => {
-	const html = Mustache.render(locationTemplate, { 
-		owner: location.owner,
-		url: location.url,
-		createdAt: moment(location.createdAt).format('h:mm a')
-	})
-	$messages.insertAdjacentHTML('beforeend', html)
-})
 
 socket.on('roomData', ({ room, users }) => {
-	const html = Mustache.render(roomInfoTemplate, {
+	if(users.length > 4) {
+		users.length = 4
+	}
+	
+	const html = Mustache.render(roomDataTemplate, {
 		room,
 		users
 	})
 	
-	document.querySelector('.room-info').innerHTML = html
+	document.querySelector('.room-data-conatiner').innerHTML = html
 })
 
 
@@ -74,7 +70,9 @@ $messageForm.addEventListener('submit', (e) => {
 	socket.emit('sendMsg', message, (error) => {
 		$messageFormInput.value = ''
 		$messageFormButton.removeAttribute('disabled')
-		$messageFormInput.focus()
+		if(userDeviceWidth > 600 ) {
+			$messageFormInput.focus()
+		}
 		
 		if(error) {
 			return console.log(error)
@@ -85,23 +83,6 @@ $messageForm.addEventListener('submit', (e) => {
 })
 
 
-// sharing location
-$sendLocationButton.addEventListener('click', (e) => {
-	if(!navigator.geolocation) {
-		return alert('Geolocation is not supported in your browser!')
-	}
-	
-	$sendLocationButton.setAttribute('disabled', 'disabled')
-	navigator.geolocation.getCurrentPosition(({coords}) => {
-		socket.emit('sendLocation', {
-			latitude : coords.latitude,
-			longitude : coords.longitude 
-		}, () => {
-			$sendLocationButton.removeAttribute('disabled')
-			console.log('Location shared')
-		})
-	})
-})
 
 socket.emit('join', { username, room }, (error) => {
 	if(error) {
